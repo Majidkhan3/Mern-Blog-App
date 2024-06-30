@@ -81,15 +81,16 @@ export default function Header() {
           <FaMoon />
         </Button>
         <Link to="/signin">
-          <Button gradientDuoTone="purpleToBlue">Sign In</Button>
+          <Button gradientDuoTone="purpleToBlue" outline>
+            Sign In
+          </Button>
         </Link>
         <Navbar.Toggle />
       </div>
       <Navbar.Collapse>
         {" "}
-        Heloern wr
-        <Navbar.Link active={path === "/"} href="/">
-          Home
+        <Navbar.Link active={path === "/"} as={"div"}>
+          <Link to="/">Home</Link>
         </Navbar.Link>
         <Navbar.Link active={path === "/about"} as="div">
           <Link to="/about">About</Link>

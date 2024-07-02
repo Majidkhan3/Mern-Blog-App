@@ -2,14 +2,22 @@ import { Alert, Button, Label, Spinner, TextInput } from "flowbite-react";
 import { useState } from "react";
 import { Link, useNavigate } from "react-router-dom";
 import { signin } from "../routes/APIroutes";
+import {
+  signInSuccess,
+  signInFailure,
+  signInStart,
+} from "../redux/user/userSlice";
+import { useDispatch, useSelector } from "react-redux";
 // import { Link, useNavigate } from "react-router-dom";
 // import OAuth from "../components/OAuth";
 
 export default function SignIn() {
   const [formData, setFormData] = useState({});
-  const [errorMessage, setErrorMessage] = useState(null);
-  const [loading, setLoading] = useState(false);
+  const { loading, error: errorMessage } = useSelector((state) => state.user);
+  // const [errorMessage, setErrorMessage] = useState(null);
+  // const [loading, setLoading] = useState(false);
   const navigate = useNavigate();
+  const dispatch = useDispatch();
 
   const handleChange = (e) => {
     setFormData({ ...formData, [e.target.id]: e.target.value.trim() });
@@ -18,18 +26,20 @@ export default function SignIn() {
   const handleSubmit = async (e) => {
     e.preventDefault();
     if (!formData.email || !formData.password) {
-      return setErrorMessage("please fill out all fields");
+      dispatch(signInFailure("please fill out all fields"));
     }
     console.log(formData);
     try {
-      setLoading(true);
-      setErrorMessage(null);
+      dispatch(signInStart());
+      // setLoading(true);
+      // setErrorMessage(null);
       const res = await fetch(signin, {
         method: "POST",
         headers: { "Content-Type": "application/json" }, // Corrected here
         body: JSON.stringify(formData),
       });
       const data = await res.json();
+      // localStorage.setItem("chat-app", data.json);
       // useEffect(() => {
       //   const navigate = async () => {
       //     if (data.success === true) {
@@ -40,19 +50,21 @@ export default function SignIn() {
       // }, [data]);
       console.log(data);
       if (data.success === false) {
-        return setErrorMessage(data.message);
+        dispatch(signInFailure(data.message));
       }
       // else if (data.success) {
       // navigate("/sign-in");
       // }
 
-      setLoading(false);
+      // setLoading(false);
       console.log(data); // Log response for debugging
       if (res.ok) {
+        dispatch(signInSuccess(data));
         navigate("/");
       }
     } catch (error) {
-      setErrorMessage(error.message);
+      // setErrorMessage(error.message);
+      dispatch(signInFailure(error.message));
       console.error(error); // Log error for debugging
     }
   };

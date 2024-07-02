@@ -49,7 +49,7 @@ export default function SignUp() {
       setLoading(false);
       console.log(data); // Log response for debugging
       if (res.ok) {
-        navigate("/sign-in");
+        navigate("/signin");
       }
     } catch (error) {
       setErrorMessage(error.message);
@@ -119,9 +119,9 @@ export default function SignUp() {
             </Button>
           </form>
           <div className="flex gap-2 text-sm mt-5">
-            <span>Have an account?</span>
-            <Link to="/sign-in" className="text-blue-500">
-              Sign In
+            <span> Have an account?</span>
+            <Link to="/signin" className="text-blue-500">
+              Sign in
             </Link>
           </div>
           {errorMessage && (

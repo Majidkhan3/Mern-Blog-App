@@ -10,6 +10,11 @@ import {
 import { app } from "../firebase";
 import { CircularProgressbar } from "react-circular-progressbar";
 import "react-circular-progressbar/dist/styles.css";
+import {
+  updateStart,
+  updateSuccess,
+  updateFailure,
+} from "../redux/user/userSlice";
 
 export default function DashProfile() {
   const { currentUser } = useSelector((state) => state.user);

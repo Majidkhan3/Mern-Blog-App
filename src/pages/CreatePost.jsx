@@ -10,10 +10,9 @@ import {
 } from "firebase/storage";
 import { app } from "../firebase";
 import "react-circular-progressbar/dist/styles.css";
-
 import { CircularProgressbar } from "react-circular-progressbar";
 import { useNavigate } from "react-router-dom";
-import e from "express";
+
 export default function CreatePost() {
   const [file, setFile] = useState(null);
   const [imageUploadProgress, setImageUploadProgress] = useState(null);
@@ -22,7 +21,8 @@ export default function CreatePost() {
   const [publishError, setPublishError] = useState();
   const navigate = useNavigate();
   console.log(formData);
-  const handleUpdloadImage = async () => {
+
+  const handleUploadImage = async () => {
     try {
       if (!file) {
         setImageUploadError("Please select an image");
@@ -58,8 +58,9 @@ export default function CreatePost() {
       console.log(error);
     }
   };
-  const handlesubmit = async () => {
-    e.preventDefault();
+
+  const handleSubmit = async (event) => {
+    event.preventDefault();
     try {
       const res = await fetch("api/post/create", {
         method: "POST",
@@ -81,10 +82,11 @@ export default function CreatePost() {
       setPublishError("Something went wrong");
     }
   };
+
   return (
     <div className="p-3 max-w-3xl mx-auto min-h-screen">
       <h1 className="text-center text-3xl my-7 font-semibold">Create a post</h1>
-      <form className="flex flex-col gap-4">
+      <form className="flex flex-col gap-4" onSubmit={handleSubmit}>
         <div className="flex flex-col gap-4 sm:flex-row justify-between">
           <TextInput
             type="text"
@@ -118,7 +120,7 @@ export default function CreatePost() {
             gradientDuoTone="purpleToBlue"
             size="sm"
             outline
-            onClick={handleUpdloadImage}
+            onClick={handleUploadImage}
             disabled={imageUploadProgress}
           >
             {imageUploadProgress ? (

@@ -85,7 +85,9 @@ export default function DashPosts() {
     dark:scrollbar-thumb-slate-500"
     >
       {loading ? (
-        <div>...loading</div>
+        <div className="main-loader">
+          <div className="loader"></div>
+        </div>
       ) : (
         <>
           {currentUser.isAdmin && userPosts.length > 0 && (

@@ -7,6 +7,7 @@ export default function DashPosts() {
   const { currentUser } = useSelector((state) => state.user);
   const [userPosts, setUserPosts] = useState([]);
   const [loading, setLoading] = useState(true);
+  const [showMore, setShowMore] = useState(true);
 
   useEffect(() => {
     const fetchUserPosts = async () => {
@@ -14,8 +15,12 @@ export default function DashPosts() {
       try {
         const res = await fetch(`/api/post/getposts?userId=${currentUser._id}`);
         const data = await res.json();
+        console.log(data);
         if (res.ok) {
           setUserPosts(data.posts);
+          if (data.posts.length > 0) {
+            setShowMore(true);
+          }
         } else {
           console.error(
             `Failed to fetch posts: ${res.status} - ${data.message}`
@@ -32,63 +37,98 @@ export default function DashPosts() {
       fetchUserPosts();
     }
   }, [currentUser._id, currentUser.isAdmin]);
-
+  const handleShowMore = async () => {
+    const startIndex = userPosts.length;
+    try {
+      const res = await fetch(
+        `/api/post/getposts?userId=${currentUser._id}&startIndex=${startIndex}`
+      );
+      const data = await res.json();
+      if (res.ok) {
+        setUserPosts((prev) => [...prev, ...data.posts]);
+        if (data.posts.length > 0) {
+          setShowMore(false);
+        }
+      }
+    } catch (error) {
+      console.log(error.message);
+    }
+  };
   return (
-    <div className="w-full table-auto overflow-x-scroll md:mx-auto p-3 scrollbar">
-      {currentUser.isAdmin && userPosts.length > 0 && (
+    <div
+      className="w-full table-auto overflow-x-scroll md:mx-auto p-3 scrollbar
+    scrollbar-track-slate-100  scrollbar-thumb-slate-300 dark:scrollbar-track-slate-700
+    dark:scrollbar-thumb-slate-500"
+    >
+      {loading ? (
+        <div>...loading</div>
+      ) : (
         <>
-          <Table hoverable className="shadow-md">
-            <Table.Head>
-              <Table.HeadCell>Date Updated</Table.HeadCell>
-              <Table.HeadCell>Post image</Table.HeadCell>
-              <Table.HeadCell>Post title</Table.HeadCell>
-              <Table.HeadCell>Category</Table.HeadCell>
-              <Table.HeadCell>Delete</Table.HeadCell>
-              <Table.HeadCell>
-                <span>Edit</span>
-              </Table.HeadCell>
-            </Table.Head>
-            {userPosts.map((post) => (
-              <Table.Body key={post._id} className="divide-y">
-                <Table.Row className="bg-white dark:border-gray-800 dark:bg-gray-800">
-                  <Table.Cell>
-                    {new Date(post.updatedAt).toLocaleDateString()}
-                  </Table.Cell>
-                  <Table.Cell>
-                    <Link to={`/post/${post.slug}`}>
-                      <img
-                        src={post.image}
-                        alt={post.image}
-                        className="w-20 h-10 object-cover bg-gray-500"
-                      />
-                    </Link>
-                  </Table.Cell>
-                  <Table.Cell>
-                    <Link
-                      className="font-medium text-gray-500 dark:text-white"
-                      to={`/post/${post.slug}`}
-                    >
-                      {post.title}
-                    </Link>
-                  </Table.Cell>
-                  <Table.Cell>{post.category} </Table.Cell>
-                  <Table.Cell>
-                    <span className="font-medium text-red-500 hover:underline cursor-pointer">
-                      Delete
-                    </span>{" "}
-                  </Table.Cell>
-                  <Table.Cell>
-                    <Link
-                      to={`/update-post/${post._id}`}
-                      className="text-teal-500"
-                    >
-                      <span> Edit</span>{" "}
-                    </Link>
-                  </Table.Cell>
-                </Table.Row>
-              </Table.Body>
-            ))}
-          </Table>
+          {currentUser.isAdmin && userPosts.length > 0 && (
+            <>
+              <Table hoverable className="shadow-md">
+                <Table.Head>
+                  <Table.HeadCell>Date Updated</Table.HeadCell>
+                  <Table.HeadCell>Post image</Table.HeadCell>
+                  <Table.HeadCell>Post title</Table.HeadCell>
+                  <Table.HeadCell>Category</Table.HeadCell>
+                  <Table.HeadCell>Delete</Table.HeadCell>
+                  <Table.HeadCell>
+                    <span>Edit</span>
+                  </Table.HeadCell>
+                </Table.Head>
+                {userPosts.map((post) => (
+                  <Table.Body key={post._id} className="divide-y">
+                    <Table.Row className="bg-white dark:border-gray-800 dark:bg-gray-800">
+                      <Table.Cell>
+                        {new Date(post.updatedAt).toLocaleDateString()}
+                      </Table.Cell>
+                      <Table.Cell>
+                        <Link to={`/post/${post.slug}`}>
+                          <img
+                            src={post.image}
+                            alt={post.image}
+                            className="w-20 h-10 object-cover bg-gray-500"
+                          />
+                        </Link>
+                      </Table.Cell>
+                      <Table.Cell>
+                        <Link
+                          className="font-medium text-gray-500 dark:text-white"
+                          to={`/post/${post.slug}`}
+                        >
+                          {post.title}
+                        </Link>
+                      </Table.Cell>
+                      <Table.Cell>{post.category} </Table.Cell>
+                      <Table.Cell>
+                        <span className="font-medium text-red-500 hover:underline cursor-pointer">
+                          Delete
+                        </span>{" "}
+                      </Table.Cell>
+                      <Table.Cell>
+                        <Link
+                          to={`/update-post/${post._id}`}
+                          className="text-teal-500"
+                        >
+                          <span> Edit</span>{" "}
+                        </Link>
+                      </Table.Cell>
+                    </Table.Row>
+                  </Table.Body>
+                ))}
+              </Table>
+              {showMore && (
+                <button
+                  onClick={handleShowMore}
+                  className="w-full text-teal-500 self-center text-sm py-7"
+                >
+                  {" "}
+                  Show more{" "}
+                </button>
+              )}
+            </>
+          )}
         </>
       )}
     </div>

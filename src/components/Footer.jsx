@@ -39,7 +39,7 @@ export default function FooterCom() {
                   target="_blank"
                   rel="noopener noreferrer"
                 >
-                  Sahand's Blog
+                  Sahand Blog
                 </Footer.Link>
               </Footer.LinkGroup>
             </div>
@@ -59,7 +59,7 @@ export default function FooterCom() {
             <div>
               <Footer.Title title="Legal" />
               <Footer.LinkGroup col>
-                <Footer.Link href="#">Privacy Policy</Footer.Link>
+                <Footer.Link href="#">Privacy </Footer.Link>
                 <Footer.Link href="#">Terms &amp; Conditions</Footer.Link>
               </Footer.LinkGroup>
             </div>

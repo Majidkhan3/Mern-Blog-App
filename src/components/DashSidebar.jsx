@@ -63,7 +63,7 @@ export default function DashSidebar() {
             className="cursor-pointer"
             onClick={handleSignout}
           >
-            Sign
+            Sign Out
           </Sidebar.Item>
         </Sidebar.ItemGroup>
       </Sidebar.Items>

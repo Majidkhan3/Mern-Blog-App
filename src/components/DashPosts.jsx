@@ -135,7 +135,7 @@ export default function DashPosts() {
                           }}
                           className="font-medium text-red-500 hover:underline cursor-pointer"
                         >
-                          Delete all users
+                          Delete
                         </span>{" "}
                       </Table.Cell>
                       <Table.Cell>

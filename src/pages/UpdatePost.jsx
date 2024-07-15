@@ -1,5 +1,4 @@
 import { Alert, Button, FileInput, Select, TextInput } from "flowbite-react";
-import { useEffect, useState } from "react";
 import ReactQuill from "react-quill";
 import "react-quill/dist/quill.snow.css";
 import {
@@ -8,22 +7,24 @@ import {
   ref,
   uploadBytesResumable,
 } from "firebase/storage";
-import { useSelector } from "react-redux";
 import { app } from "../firebase";
-import "react-circular-progressbar/dist/styles.css";
+import { useEffect, useState } from "react";
 import { CircularProgressbar } from "react-circular-progressbar";
+import "react-circular-progressbar/dist/styles.css";
 import { useNavigate, useParams } from "react-router-dom";
+import { useSelector } from "react-redux";
 
 export default function UpdatePost() {
   const [file, setFile] = useState(null);
-  const { currentUser } = useSelector((state) => state.user);
-
   const [imageUploadProgress, setImageUploadProgress] = useState(null);
   const [imageUploadError, setImageUploadError] = useState(null);
   const [formData, setFormData] = useState({});
-  const [publishError, setPublishError] = useState();
-  const navigate = useNavigate();
+  const [publishError, setPublishError] = useState(null);
   const { postId } = useParams();
+
+  const navigate = useNavigate();
+  const { currentUser } = useSelector((state) => state.user);
+  console.log(currentUser);
   useEffect(() => {
     try {
       const fetchPost = async () => {
@@ -39,12 +40,14 @@ export default function UpdatePost() {
           setFormData(data.posts[0]);
         }
       };
-      fetchPost();
-    } catch (error) {}
-  }, []);
-  console.log(formData);
 
-  const handleUploadImage = async () => {
+      fetchPost();
+    } catch (error) {
+      console.log(error.message);
+    }
+  }, [postId]);
+
+  const handleUpdloadImage = async () => {
     try {
       if (!file) {
         setImageUploadError("Please select an image");
@@ -80,12 +83,11 @@ export default function UpdatePost() {
       console.log(error);
     }
   };
-
-  const handleSubmit = async (event) => {
-    event.preventDefault();
+  const handleSubmit = async (e) => {
+    e.preventDefault();
     try {
       const res = await fetch(
-        `api/post/updatepost/${formData._id}/${currentUser._id}`,
+        `/api/post/updatepost/${formData._id}/${currentUser._id}`,
         {
           method: "PUT",
           headers: {
@@ -99,6 +101,7 @@ export default function UpdatePost() {
         setPublishError(data.message);
         return;
       }
+
       if (res.ok) {
         setPublishError(null);
         navigate(`/post/${data.slug}`);
@@ -107,10 +110,9 @@ export default function UpdatePost() {
       setPublishError("Something went wrong");
     }
   };
-
   return (
     <div className="p-3 max-w-3xl mx-auto min-h-screen">
-      <h1 className="text-center text-3xl my-7 font-semibold">Update a post</h1>
+      <h1 className="text-center text-3xl my-7 font-semibold">Update post</h1>
       <form className="flex flex-col gap-4" onSubmit={handleSubmit}>
         <div className="flex flex-col gap-4 sm:flex-row justify-between">
           <TextInput
@@ -125,10 +127,10 @@ export default function UpdatePost() {
             value={formData.title}
           />
           <Select
-            value={formData.category}
             onChange={(e) =>
               setFormData({ ...formData, category: e.target.value })
             }
+            value={formData.category}
           >
             <option value="uncategorized">Select a category</option>
             <option value="javascript">JavaScript</option>
@@ -147,7 +149,7 @@ export default function UpdatePost() {
             gradientDuoTone="purpleToBlue"
             size="sm"
             outline
-            onClick={handleUploadImage}
+            onClick={handleUpdloadImage}
             disabled={imageUploadProgress}
           >
             {imageUploadProgress ? (
@@ -181,10 +183,10 @@ export default function UpdatePost() {
           }}
         />
         <Button type="submit" gradientDuoTone="purpleToPink">
-          Update a Post
+          Update post
         </Button>
         {publishError && (
-          <Alert className="mt-5 " color="failure">
+          <Alert className="mt-5" color="failure">
             {publishError}
           </Alert>
         )}

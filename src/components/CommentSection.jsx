@@ -54,6 +54,7 @@ export default function CommentSection({ postId }) {
     };
     getComments();
   }, [postId]);
+  const handleLike = async () => {};
   return (
     <div className="max-w-2xl mx-auto w-full p-3">
       {currentUser ? (
@@ -117,7 +118,7 @@ export default function CommentSection({ postId }) {
             </div>
           </div>
           {comments.map((comment) => (
-            <Comment key={comment._id} comment={comment} />
+            <Comment key={comment._id} comment={comment} onLike={handleLike} />
           ))}
         </>
       )}

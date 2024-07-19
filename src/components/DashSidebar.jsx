@@ -4,6 +4,8 @@ import {
   HiArrowSmRight,
   HiDocumentText,
   HiOutlineUserGroup,
+  HiAnnotation,
+  HiChartPie,
 } from "react-icons/hi";
 import { useEffect, useState } from "react";
 import { Link, useLocation } from "react-router-dom";
@@ -41,6 +43,13 @@ export default function DashSidebar() {
     <Sidebar className="w-full md:w-56">
       <Sidebar.Items>
         <Sidebar.ItemGroup className="flex flex-col gap-1">
+          {currentUser && currentUser.isAdmin && (
+            <Link to="/dashboard?tab=dash">
+              <Sidebar.Item active={tab === "dash"} as="div" icon={HiChartPie}>
+                Dashboard
+              </Sidebar.Item>
+            </Link>
+          )}
           <Link to="/dashboard?tab=profile">
             <Sidebar.Item
               active={tab === "profile"}
@@ -64,15 +73,26 @@ export default function DashSidebar() {
             </Link>
           )}
           {currentUser.isAdmin && (
-            <Link to="/dashboard?tab=users">
-              <Sidebar.Item
-                active={tab === "users"}
-                as="div"
-                icon={HiOutlineUserGroup}
-              >
-                Users
-              </Sidebar.Item>
-            </Link>
+            <>
+              <Link to="/dashboard?tab=users">
+                <Sidebar.Item
+                  active={tab === "users"}
+                  as="div"
+                  icon={HiOutlineUserGroup}
+                >
+                  Users
+                </Sidebar.Item>
+              </Link>
+              <Link to="/dashboard?tab=comments">
+                <Sidebar.Item
+                  active={tab === "comments"}
+                  as="div"
+                  icon={HiAnnotation}
+                >
+                  Comments
+                </Sidebar.Item>
+              </Link>
+            </>
           )}
           <Sidebar.Item
             icon={HiArrowSmRight}

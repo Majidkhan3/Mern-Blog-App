@@ -183,7 +183,7 @@ export default function UpdatePost() {
           }}
         />
         <Button type="submit" gradientDuoTone="purpleToPink">
-          Update post
+          Update post & Image
         </Button>
         {publishError && (
           <Alert className="mt-5" color="failure">

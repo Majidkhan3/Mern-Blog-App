@@ -15,6 +15,7 @@ import OnlyAdminPrivateRoute from "./components/OnlyAdminPrivateRoute";
 import CreatePost from "./pages/CreatePost";
 import UpdatePost from "./pages/UpdatePost";
 import PostPage from "./pages/PostPage";
+import Search from "./pages/Search";
 import ScrollToTop from "./components/ScrollToTop";
 const App = () => {
   return (
@@ -23,6 +24,7 @@ const App = () => {
       <Header />
       <Routes>
         <Route path="/signin" element={<SignIn />} />
+        <Route path="/search" element={<Search />} />
         <Route path="/signup" element={<SignUp />} />
         <Route path="/" element={<Home />} />
         <Route element={<PrivateRoute />}>
